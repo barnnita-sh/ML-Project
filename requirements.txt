@@ -4,3 +4,6 @@ h3>=4.0
 pyarrow>=14
 matplotlib>=3.7
 pytest>=7
+scikit-learn>=1.4
+scipy>=1.11
+joblib>=1.3

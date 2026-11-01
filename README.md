@@ -8,8 +8,9 @@ Bangkok taxi GPS data published by the iTIC Foundation
 ([Longdo Traffic open data](https://traffic.longdo.com/opendata/probe-data/), CC BY 4.0).
 
 This README covers the parts that are finished: the **data pipeline and data audit**
-(raw GPS pings to clean trips, waits and snapshot rows) and the **features** (the
-Model A and Model B training tables). Models and the app come next.
+(raw GPS pings to clean trips, waits and snapshot rows), the **features** (the
+Model A and Model B training tables) and the **baselines, Model A and Model B**
+(training, tuning, validation and freezing). The app and the replay evaluation come next.
 
 ## Contents
 
@@ -20,6 +21,7 @@ Model A and Model B training tables). Models and the app come next.
 5. [Run the pipeline](#5-run-the-pipeline)
 6. [Run the data audit](#6-run-the-data-audit)
 6b. [Build the features](#6b-build-the-features)
+6c. [Train and validate the models](#6c-train-and-validate-the-models)
 7. [Outputs](#7-outputs)
 8. [The rules (v1.0)](#8-the-rules-v10)
 9. [Changing a rule](#9-changing-a-rule)
@@ -67,6 +69,18 @@ freeze the rules (version v1.0).
 | `scripts/coverage_report.py` | Write `docs/coverage_report.md` |
 | `scripts/eda_update.py` | Write `docs/eda_update_v1.md` and `docs/figures/` |
 | `scripts/verify_outputs.py` | Deep check of every table (counts, labels, H3, features re-computed by hand) |
+| `src/taxi/models/data.py` | Date splits, folds, purging, sampling, feature lists and E4 groups |
+| `src/taxi/models/prep.py` | Preprocessing for the linear models (logs, cycles, one-hot, missing flags, scaling) |
+| `src/taxi/models/baselines.py` | Historical average (Model A) and historical survival curves (Model B) |
+| `src/taxi/models/survival.py` | Kaplan-Meier, Cox model, boosted-trees-to-survival-curve, curve summaries |
+| `src/taxi/models/wrappers.py` | Model A (Poisson regression, boosted trees) and Model B (Cox, boosted trees) |
+| `src/taxi/models/metrics.py` | Poisson deviance, C-index, IPCW Brier score, calibration |
+| `scripts/prepare_model_data.py` | Split and sample the feature tables into train / validation / test |
+| `scripts/train_models.py` | Tune and train all models on the training period |
+| `scripts/evaluate_validation.py` | Compare on validation, E3 and E4, freeze the choice, write the reports |
+| `scripts/check_model_a_features.py` | Model A feature groups on the full training sample (follow-up to E4) |
+| `scripts/evaluate_test.py` | One-time test run (week 3 only, needs `--confirm`) |
+| `tests/test_models.py` | 7 tests: Kaplan-Meier, C-index, Cox, Brier, shrinkage, censored error curve |
 | `tests/test_episodes.py` | 12 small made-up traces with known answers |
 | `tests/test_features.py` | 7 timing tests: no feature may use the future |
 | `audit/audit_sheet.csv` | The labelled audit (50 waits) that froze rules v1.0 |
@@ -78,6 +92,8 @@ freeze the rules (version v1.0).
 | `docs/features.md` | Feature dictionary, training tables, timing rule |
 | `docs/coverage_report.md` | How often features have real data behind them |
 | `docs/eda_update_v1.md` | Key EDA numbers and charts recomputed with the cleaned data |
+| `docs/models.md` | How the models, tuning, metrics and freeze rule work, and why |
+| `docs/models_validation.md`, `docs/model_card.md` | Written by `evaluate_validation.py`: results and the frozen models |
 | `EDA-Bangkok-all.ipynb` | Exploratory data analysis (also makes `taxi_days/`) |
 
 Not in git (too big, see `.gitignore`): `eda_output_bangkok/`, `pipeline_output/`,
@@ -271,6 +287,45 @@ python scripts/verify_outputs.py                                   # deep check 
 Features for a day need the 29 days before it and the day after, so after rebuilding some
 days, rebuild features with `--force` for the following month too.
 
+## 6c. Train and validate the models
+
+Run after the features (section 6b). The methods and the reasons for each choice:
+`docs/models.md`. These need `scikit-learn` and `scipy` (in `requirements.txt`).
+
+```bash
+pip install -r requirements.txt                 # adds scikit-learn, scipy, joblib
+python tests/test_models.py                     # must end with: all 7 tests passed
+python scripts/prepare_model_data.py            # split + sample, about 5-10 min
+python scripts/train_models.py                  # tune + train everything, about 1 hour
+python scripts/evaluate_validation.py           # compare, freeze, write reports, about 15 min
+```
+
+| Step | Writes |
+| --- | --- |
+| `prepare_model_data.py` | `pipeline_output/model_input/{modelA,modelB}_{train,val,test}.*`, `info.json` (row counts per split) |
+| `train_models.py` | `pipeline_output/models/*.joblib` (baselines and four models), `tuning.json` (every trial) |
+| `evaluate_validation.py` | `pipeline_output/models/final.json` (frozen choice), `docs/models_validation.md`, `docs/model_card.md`, `docs/figures/models_*.png` |
+
+**Splits** (by date, never random): warm-up 1 to 28 January left out (features need 4 weeks
+of history); 29 August left out (low coverage); train 29 January to 15 September;
+validation 16 September to 9 November; test 10 November to 31 December. Model B rows
+whose wait outcome runs past the end of their split are dropped from train and
+validation (purging).
+
+**Sampling:** Model A keeps 25% of training hexagon-hours (50% of validation and test);
+Model B keeps 12% of training waits (20% of validation and test), always whole waits.
+Sampling uses a hash of the key, so the same rows come out every run. Smaller samples
+for a quick run: `python scripts/prepare_model_data.py --frac-a-train 0.1 --frac-b-train 0.05`.
+
+**Quick run** of training with a small budget: `python scripts/train_models.py --trials 3`.
+Only one model family: `--what baselines`, `--what a` or `--what b`.
+
+**Feature check (Model A):** `python scripts/check_model_a_features.py` (about 10 min) repeats the
+feature-group test on the full training sample and writes `docs/models_feature_check.md`.
+
+**The test period is not used here.** `scripts/evaluate_test.py --confirm` is the one-time
+test run for week 3, after the team agrees the models are frozen. It refuses to run twice.
+
 ## 7. Outputs
 
 `pipeline_output/` has one file per day in each folder.
@@ -331,3 +386,6 @@ Each output's manifest records the rules version that made it, so mixed builds a
 | `no input file, skipped` | That day is not in `taxi_days/`, or `TAXI_DATA_DIR` points to the wrong folder |
 | `already built (use --force to rebuild)` | Add `--force` |
 | A test fails | A rule change broke known behaviour; fix it before building |
+| `ModuleNotFoundError: sklearn` or `scipy` | `pip install -r requirements.txt` with the environment active |
+| `train_models.py` runs out of memory | Lower the sample: `prepare_model_data.py --frac-a-train 0.15 --frac-b-train 0.08`, or `--tune-rows 300000` |
+| `final.json` missing when running the test script | Run `evaluate_validation.py` first |
