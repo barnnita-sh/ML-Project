@@ -1,0 +1,51 @@
+n,episode_id,agreed_label,old_minutes,new_periods,minutes_kept_for_training
+1,6Y/OhRXMcIQ3apAQFEIfhhGjZQE-1740185835,searching,16.0,dropoff 16min pickup,16.0
+2,zFVbaRUDQXnDQMuLb3mdg54nw3Y-1744596460,searching,8.32,dropoff 8min pickup,8.3
+3,hwp62lQ7zdK4eqEEfiVmgzjI83o-1736468787,searching,9.0,dropoff 9min pickup,9.0
+4,89NTinAcNtVI7GlJzolLpTKPyW4-1742524235,light_error_or_missed_trip,4.98,dropoff 5min censored:off_duty,5.0
+5,53yfGF85l14oyEKayYvsDf28xEc-1736482685,unsure,3.2,dropoff 3min pickup,3.2
+6,drjO9fJd9IqPgCLRga01mTgiR7o-1756950279,searching,5.38,dropoff 5min pickup,5.4
+7,JH/sHuNVulkq+HXExyCUr/RrCDE-1744596502,searching,42.0,dropoff 42min pickup +missed_trip_flag,0.0
+8,yKrFWepv4i6Y2tfr7yU6mnJZWUg-1744592548,searching,37.83,dropoff 38min pickup,37.8
+9,nYi7WmmRbZ5dpxbH74sNy4JYk2Y-1756975989,searching,2.72,dropoff 3min pickup,2.7
+10,/13tdmAIjjFxnDRFxx1bEr8lA6o-1750928929,searching,2.83,dropoff 3min pickup,2.8
+11,SGYPad1PcENGtM2h9pc44DnCsFo-1750902001,light_error_or_missed_trip,2.97,after_rest 3min censored:off_duty,3.0
+12,UXPVlJt7F6LdhyNrW1Y1DBXCXaU-1744637822,waiting_at_spot,2.0,after_rest 2min pickup,2.0
+13,4YymdtaVsg7zdZOOmEF/ZHvhHSs-1756986670,off_duty,1.58,dropoff 2min censored:off_duty,1.6
+14,/zdWgLJYi5w1tWp92yJXLkydBa0-1740215673,searching,2.92,dropoff 3min pickup,2.9
+15,nZoO83nYVp+SOHaWCefGvjeCZA4-1747220066,searching,2.47,dropoff 2min pickup,2.5
+16,2g8l5XsEWVj/vbDRirSKmwXi+oY-1736534043,searching,65.18,dropoff 65min pickup,65.2
+17,fc2bRrf92R7UREKCxD2jjSErD+g-1742592163,off_duty,175.32,dropoff 71min censored:off_duty | after_rest 34min censored:gap,105.2
+18,6esAP54ia4UbJZoQt59k9K2XuNs-1750942773,searching,111.0,dropoff 111min pickup,111.0
+19,ZKK29X94LcgGwiS5TE3kqdc1Pz4-1742553575,unsure,97.0,dropoff 97min censored:off_duty,97.0
+20,uUX17I/ol48oxw/0fYiSMEOD6eM-1756975642,searching,72.25,dropoff 72min pickup,72.2
+21,WJ2qQxJRcdi0gaR4gfpj3EOtwDE-1755850974,waiting_at_spot,73.52,dropped,0.0
+22,HRJehG1p7qAYA0Rh8iSjjM5LzEk-1744651926,unsure,75.88,dropoff 76min pickup +missed_trip_flag,0.0
+23,2WwOGMChgB/kOrAfZuOCP1RciXw-1757004869,searching,140.95,after_rest 141min censored:off_duty,140.9
+24,UknlQ6gddS23xehxUqDNjFdGooY-1755894109,off_duty,397.57,dropoff 9min censored:off_duty,8.6
+25,Avd3Q0+qPgH6moJbLRcF0t46OXw-1750933656,off_duty,243.5,after_rest 10min censored:off_duty | after_rest 13min pickup,22.9
+26,CmuuFRLMQW70Cc38MkphzdRMs7Q-1736522148,searching,271.38,dropoff 180min censored:too_long,180.0
+27,Al8aw+CRpCjY+0vkE8srC21+Cx8-1736492060,searching,183.93,dropoff 180min censored:too_long,179.9
+28,NCpIFJ47dIwPFEftxzBO8xBkmP4-1756967805,off_duty,411.58,dropoff 15min censored:off_duty | after_rest 180min censored:too_long | after_rest 60min pickup,254.6
+29,SBe6eeTcmDSwoFve2tlGdprEmsA-1755881801,light_error_or_missed_trip,374.5,after_rest 180min censored:too_long,179.6
+30,27E+kqSuqn/ztu9XKMdsoWi2lss-1747261649,off_duty,271.98,dropoff 5min censored:off_duty,5.3
+31,bTarXD1vl35CbfQ4ExtNsGfjFYo-1744613343,light_error_or_missed_trip,59.0,dropoff 59min censored:gap +missed_trip_flag,0.0
+32,InJw2bIkrPjV4LYzGBmgzAgpujQ-1751522953,searching,22.0,dropoff 22min censored:gap,22.0
+33,yrqVCNWSGtZYqtQzwvlTrV0lsRY-1740238408,light_error_or_missed_trip,8.68,after_rest 9min censored:gap,8.7
+34,JdZPI5ipnAcvaEjCWnFPmGTHF4k-1742560196,gps_problem,0.0,dropped,0.0
+35,MNGv/9ZRmzJip8/cLqISFz9+8I0-1755856050,light_error_or_missed_trip,72.67,dropoff 73min censored:gap +missed_trip_flag,0.0
+36,iXmYmTqnImk7Z2F74N1n4V9a4BQ-1751552323,off_duty,225.57,dropoff 78min censored:off_duty | after_rest 84min censored:gap,161.9
+37,EsXJAmLDCu2HdMUhI+tkKxu2G0c-1740236816,waiting_at_spot,39.42,dropoff 39min pickup,39.4
+38,uxyIZyJpgK+32br9eTOPO4MNR70-1751551693,waiting_at_spot,29.08,dropoff 29min pickup,29.1
+39,0ABWM1w76B/rR40oB5d+vWQsuWM-1751572741,waiting_at_spot,5.6,dropoff 6min pickup,5.6
+40,FNORXPuNe8h04lWu2hEu9NPRyaQ-1750924811,off_duty,167.3,dropoff 8min censored:off_duty | after_rest 4min pickup,12.0
+41,39CE8Y99ae/RKNwrpjmN7ws2sNE-1742577932,searching,54.95,dropoff 55min censored:off_duty,55.0
+42,WJ2qQxJRcdi0gaR4gfpj3EOtwDE-1740203627,waiting_at_spot,10.22,dropoff 10min pickup,10.2
+43,IjomNvxg331krpkH6siBEWPihxg-1742518280,waiting_at_spot,29.25,dropoff 29min pickup,29.2
+44,AAQCQX7y6B/PPPHISGi7Ex/qt6s-1750946050,waiting_at_spot,7.85,dropoff 8min pickup,7.8
+45,r7/XQk16TY3zQeUeElBR3v/NY7k-1755849512,searching,41.02,dropoff 41min pickup,41.0
+46,FvNYh95GTIn4p17Dn/4JwJ2vPV8-1756997539,searching,10.97,dropoff 11min pickup,11.0
+47,HVGEcOLlqlKJwk2DIYam6N+yfU0-1747234037,searching,20.4,dropoff 20min pickup,20.4
+48,hJXl0D3F7ofFOPcb71oyQu4aGDw-1757011193,searching,11.0,dropoff 11min pickup,11.0
+49,ZxW8QCusPv7no4OmyaQekDGKCTo-1742570268,searching,40.0,dropoff 40min pickup,40.0
+50,tRfs2OslxKLT1xuOz2fw5n+XZXk-1755895114,searching,7.0,dropoff 7min pickup,7.0
