@@ -1,7 +1,7 @@
 """Make the audit sample: 50 empty periods spread over the year, one picture each,
 and a labelling sheet that both labellers fill in.
 
-  python scripts/make_audit_sample.py              # 12 days, one per month (training months only)
+  python scripts/make_audit_sample.py              # 9 training-period days, one per month
   python scripts/make_audit_sample.py --seed 7     # a different sample
 
 Writes audit/runs/sheet_<rules>_seed<seed>.csv and audit/plots/<rules>_seed<seed>/*.png.

@@ -1,0 +1,22 @@
+# data and generated outputs (too big for git)
+data/
+eda_output/
+eda_output_bangkok/
+pipeline_output/
+audit/plots/
+*.pkl
+*.parquet
+*.tar.bz2
+
+# stray empty clone inside the project folder
+ML-Project/
+
+# python / notebooks
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# OS
+.DS_Store
