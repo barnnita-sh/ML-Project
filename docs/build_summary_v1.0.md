@@ -1,6 +1,6 @@
 # Build summary, rules v1.0
 
-Days built: 365 (20250101 to 20251231). Grid: fallback-hexgrid.
+Days built: 365 (20250101 to 20251231). Grid: h3.
 
 | Item | Value |
 | --- | --- |

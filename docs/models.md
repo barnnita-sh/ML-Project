@@ -304,19 +304,48 @@ What the results say:
 - **Most used features:** Model A relies on the 4-week pickups of the hexagon, then its
   location, then empty taxis in the last hour. Model B relies on minutes already empty,
   then hour of day, location, empty taxis nearby (last hour and 4-week).
-- **E4 needs a follow-up for Model A.** On the 400,000-row E4 sample, calendar and place
-  alone (0.767) scored better than all 25 features (0.772), yet the frozen model with all
-  features on the full sample scores 0.757. So the E4 sample is too small to judge the
-  extra groups. `scripts/check_model_a_features.py` repeats the test on the full training
-  sample (adding groups and leaving each one out) and writes `docs/models_feature_check.md`;
-  the final feature list should follow that. For Model B, E4 shows every step within 0.003,
-  so no group clearly helps or hurts on its own.
+- **E4 for Model A, and the full-size check.** On the 400,000-row E4 sample, calendar and place
+  alone (0.767) scored better than all 25 features (0.772). `scripts/check_model_a_features.py`
+  repeated the test on the full training sample (`docs/models_feature_check.md`) and confirmed it:
+  calendar and place alone score **0.750**, all 25 features 0.757. Every recent-data group added
+  on top makes Model A worse; leaving one group out of the 25 changes little (the groups overlap),
+  and only the 4-week history clearly helps. For Model B, every E4 step is within 0.003, so all
+  features stay.
+
+**Decision (1 Nov 2026):** Model A stays frozen as it is (boosted trees, all 25 features) for now.
+The recommendation, explained in section 12 below, is to test a 7-feature Model A properly before
+the test run.
 
 The development run on the earlier stand-in build (smaller samples) gave the same picture
 with similar numbers (Model A 0.741 vs 0.763; Model B 0.602 vs 0.566), so the result does not
 depend on the grid.
 
-## 12. Test run (week 3)
+## 12. Recommendation: a simpler Model A (not applied yet)
+
+**What.** Train Model A on the 7 calendar-and-place features only (`hour_of_day`, `day_of_week`,
+`is_weekend`, `is_holiday`, `month`, `hex_lat`, `hex_lon`), and also try those 7 plus the 5
+history features (12 features). Keep whichever has the lowest validation deviance.
+
+**Why.** On validation the 7-feature model scores 0.750 against 0.757 for the frozen 25-feature
+model (more than twice the noise level), and 4.1% better than the historical average instead of
+3.1%. Likely reasons, to be checked: one-hour counts per hexagon are mostly 0 or 1, so they carry
+a lot of random noise that the trees partly learn; early stopping holds out random rows from the
+same hours as training, so it cannot see that this noise does not carry over to later months; and
+4-week averages help because averaging removes most of that noise.
+
+**How it improves the project.** Lower validation deviance; a simpler model whose inputs are all
+known in advance, so the heat map and demand ranking can be computed for any future hour without
+live data; nothing to break when recent data is missing; faster to compute in the replay and API.
+Model B is not affected (it does use recent and competition features, and it does not take
+Model A as an input).
+
+**How to do it fairly.** Give the 7- and 12-feature versions the same tuning budget as before
+(10 settings, same folds), compare on validation only, then freeze and re-run
+`evaluate_validation.py` so `final.json` and the reports match. Optionally also test time-based
+early stopping (hold out the last weeks of training instead of random rows). All of this happens
+before the one-time test run.
+
+## 13. Test run (week 3)
 
 `python scripts/evaluate_test.py --confirm` scores the frozen models and baselines on the
 test period once and writes `docs/models_test.md`. It refuses to run a second time (a lock
