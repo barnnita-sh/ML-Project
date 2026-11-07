@@ -1,0 +1,28 @@
+{
+  "day": "20250910",
+  "rules_version": "v1.0",
+  "grid": "h3",
+  "taxis": 1410,
+  "rows_in": 1043497,
+  "speed_jumps_removed": 31,
+  "flicker_fixed": 1718,
+  "rows_out": 1043466,
+  "trips": 14093,
+  "empty_periods": 14994,
+  "empty_censored_share": 0.1568,
+  "censor_reasons": {
+    "": 12643,
+    "off_duty": 2120,
+    "gap": 121,
+    "too_long": 92,
+    "lookahead_end": 18
+  },
+  "start_types": {
+    "dropoff": 13969,
+    "after_rest": 1025
+  },
+  "possible_missed_trip": 236,
+  "fake_trips": 978,
+  "snapshots": 79991,
+  "seconds": 1.3
+}

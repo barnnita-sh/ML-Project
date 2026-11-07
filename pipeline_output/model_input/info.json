@@ -1,0 +1,29 @@
+{
+  "train": {
+    "days": 229,
+    "modelA": 2015085,
+    "modelB": 2280472
+  },
+  "val": {
+    "days": 55,
+    "modelA": 967580,
+    "modelB": 915178
+  },
+  "test": {
+    "days": 52,
+    "modelA": 925489,
+    "modelB": 866709
+  },
+  "fractions": {
+    "modelA": {
+      "train": 0.25,
+      "val": 0.5,
+      "test": 0.5
+    },
+    "modelB": {
+      "train": 0.12,
+      "val": 0.2,
+      "test": 0.2
+    }
+  }
+}

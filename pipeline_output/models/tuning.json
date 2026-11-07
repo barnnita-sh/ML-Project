@@ -1,0 +1,550 @@
+{
+  "model_a_glm": {
+    "metric": "poisson_deviance (lower is better)",
+    "best": {
+      "setting": 0.001,
+      "fold_scores": [
+        0.787048339078825,
+        0.788844707263525
+      ],
+      "mean": 0.787946523171175,
+      "seconds": 1.7
+    },
+    "trials": [
+      {
+        "setting": 1e-05,
+        "fold_scores": [
+          0.7870630106102383,
+          0.7888424554460073
+        ],
+        "mean": 0.7879527330281229,
+        "seconds": 1.9
+      },
+      {
+        "setting": 4.641588833612782e-05,
+        "fold_scores": [
+          0.7870642004837469,
+          0.7888396001357357
+        ],
+        "mean": 0.7879519003097413,
+        "seconds": 1.8
+      },
+      {
+        "setting": 0.00021544346900318823,
+        "fold_scores": [
+          0.78705822503143,
+          0.7888363337099066
+        ],
+        "mean": 0.7879472793706683,
+        "seconds": 1.8
+      },
+      {
+        "setting": 0.001,
+        "fold_scores": [
+          0.787048339078825,
+          0.788844707263525
+        ],
+        "mean": 0.787946523171175,
+        "seconds": 1.7
+      },
+      {
+        "setting": 0.004641588833612777,
+        "fold_scores": [
+          0.7871525973088384,
+          0.7889417348865896
+        ],
+        "mean": 0.788047166097714,
+        "seconds": 1.6
+      },
+      {
+        "setting": 0.021544346900318822,
+        "fold_scores": [
+          0.7875199293214604,
+          0.7892451942623189
+        ],
+        "mean": 0.7883825617918896,
+        "seconds": 1.5
+      },
+      {
+        "setting": 0.1,
+        "fold_scores": [
+          0.7892773857182871,
+          0.7908350779759669
+        ],
+        "mean": 0.7900562318471269,
+        "seconds": 1.4
+      },
+      {
+        "setting": 0.46415888336127725,
+        "fold_scores": [
+          0.7982641362291354,
+          0.7997516211858985
+        ],
+        "mean": 0.799007878707517,
+        "seconds": 1.3
+      },
+      {
+        "setting": 2.154434690031882,
+        "fold_scores": [
+          0.8414849915782548,
+          0.8430397430476977
+        ],
+        "mean": 0.8422623673129763,
+        "seconds": 1.3
+      },
+      {
+        "setting": 10.0,
+        "fold_scores": [
+          0.9671003551986028,
+          0.9672892004344372
+        ],
+        "mean": 0.96719477781652,
+        "seconds": 1.3
+      }
+    ]
+  },
+  "model_a_gbm": {
+    "metric": "poisson_deviance (lower is better)",
+    "best": {
+      "setting": {
+        "learning_rate": 0.05,
+        "max_leaf_nodes": 127,
+        "min_samples_leaf": 50,
+        "l2_regularization": 1.0,
+        "max_features": 0.5
+      },
+      "fold_scores": [
+        0.7653852257255244,
+        0.766505360783222
+      ],
+      "mean": 0.7659452932543731,
+      "seconds": 26.7
+    },
+    "trials": [
+      {
+        "setting": {
+          "learning_rate": 0.05,
+          "max_leaf_nodes": 63,
+          "min_samples_leaf": 200,
+          "l2_regularization": 10.0,
+          "max_features": 0.5
+        },
+        "fold_scores": [
+          0.7665605984530133,
+          0.7674510821955874
+        ],
+        "mean": 0.7670058403243003,
+        "seconds": 18.5
+      },
+      {
+        "setting": {
+          "learning_rate": 0.03,
+          "max_leaf_nodes": 127,
+          "min_samples_leaf": 500,
+          "l2_regularization": 0.0,
+          "max_features": 0.5
+        },
+        "fold_scores": [
+          0.7660021861060611,
+          0.7672559659174725
+        ],
+        "mean": 0.7666290760117668,
+        "seconds": 31.9
+      },
+      {
+        "setting": {
+          "learning_rate": 0.2,
+          "max_leaf_nodes": 31,
+          "min_samples_leaf": 50,
+          "l2_regularization": 10.0,
+          "max_features": 0.5
+        },
+        "fold_scores": [
+          0.7702606319522669,
+          0.7704011966530172
+        ],
+        "mean": 0.770330914302642,
+        "seconds": 6.4
+      },
+      {
+        "setting": {
+          "learning_rate": 0.05,
+          "max_leaf_nodes": 63,
+          "min_samples_leaf": 100,
+          "l2_regularization": 0.0,
+          "max_features": 0.5
+        },
+        "fold_scores": [
+          0.7665963338905637,
+          0.7682984291868484
+        ],
+        "mean": 0.7674473815387061,
+        "seconds": 18.2
+      },
+      {
+        "setting": {
+          "learning_rate": 0.2,
+          "max_leaf_nodes": 127,
+          "min_samples_leaf": 500,
+          "l2_regularization": 1.0,
+          "max_features": 1.0
+        },
+        "fold_scores": [
+          0.768104937157033,
+          0.7701740879660898
+        ],
+        "mean": 0.7691395125615614,
+        "seconds": 7.6
+      },
+      {
+        "setting": {
+          "learning_rate": 0.05,
+          "max_leaf_nodes": 31,
+          "min_samples_leaf": 200,
+          "l2_regularization": 0.0,
+          "max_features": 0.5
+        },
+        "fold_scores": [
+          0.7696430331148287,
+          0.7708852990456657
+        ],
+        "mean": 0.7702641660802472,
+        "seconds": 14.8
+      },
+      {
+        "setting": {
+          "learning_rate": 0.03,
+          "max_leaf_nodes": 31,
+          "min_samples_leaf": 500,
+          "l2_regularization": 0.0,
+          "max_features": 0.8
+        },
+        "fold_scores": [
+          0.7715362161080347,
+          0.7725047446664521
+        ],
+        "mean": 0.7720204803872435,
+        "seconds": 16.5
+      },
+      {
+        "setting": {
+          "learning_rate": 0.05,
+          "max_leaf_nodes": 127,
+          "min_samples_leaf": 50,
+          "l2_regularization": 1.0,
+          "max_features": 0.5
+        },
+        "fold_scores": [
+          0.7653852257255244,
+          0.766505360783222
+        ],
+        "mean": 0.7659452932543731,
+        "seconds": 26.7
+      },
+      {
+        "setting": {
+          "learning_rate": 0.03,
+          "max_leaf_nodes": 127,
+          "min_samples_leaf": 20,
+          "l2_regularization": 0.1,
+          "max_features": 0.8
+        },
+        "fold_scores": [
+          0.7667859898345741,
+          0.7675918732426529
+        ],
+        "mean": 0.7671889315386136,
+        "seconds": 30.3
+      },
+      {
+        "setting": {
+          "learning_rate": 0.05,
+          "max_leaf_nodes": 15,
+          "min_samples_leaf": 500,
+          "l2_regularization": 1.0,
+          "max_features": 1.0
+        },
+        "fold_scores": [
+          0.7725246303342143,
+          0.7737214222625501
+        ],
+        "mean": 0.7731230262983821,
+        "seconds": 16.8
+      }
+    ]
+  },
+  "model_b_cox": {
+    "metric": "c_index (higher is better)",
+    "best": {
+      "setting": 0.004641588833612782,
+      "fold_scores": [
+        0.5840488926420963,
+        0.5834775174437604
+      ],
+      "mean": 0.5837632050429283,
+      "seconds": 7.1
+    },
+    "trials": [
+      {
+        "setting": 0.0001,
+        "fold_scores": [
+          0.5839402446813332,
+          0.5829437621505187
+        ],
+        "mean": 0.583442003415926,
+        "seconds": 7.8
+      },
+      {
+        "setting": 0.00035938136638046257,
+        "fold_scores": [
+          0.5839691433269877,
+          0.5830300477018308
+        ],
+        "mean": 0.5834995955144092,
+        "seconds": 8.1
+      },
+      {
+        "setting": 0.001291549665014884,
+        "fold_scores": [
+          0.5840518448108141,
+          0.5831941304560422
+        ],
+        "mean": 0.5836229876334281,
+        "seconds": 7.6
+      },
+      {
+        "setting": 0.004641588833612782,
+        "fold_scores": [
+          0.5840488926420963,
+          0.5834775174437604
+        ],
+        "mean": 0.5837632050429283,
+        "seconds": 7.1
+      },
+      {
+        "setting": 0.016681005372000592,
+        "fold_scores": [
+          0.5836292072130833,
+          0.5833277883523502
+        ],
+        "mean": 0.5834784977827168,
+        "seconds": 5.8
+      },
+      {
+        "setting": 0.05994842503189409,
+        "fold_scores": [
+          0.5826430605821356,
+          0.5822946342538333
+        ],
+        "mean": 0.5824688474179844,
+        "seconds": 4.6
+      },
+      {
+        "setting": 0.21544346900318845,
+        "fold_scores": [
+          0.5808781469827392,
+          0.5802524591382124
+        ],
+        "mean": 0.5805653030604758,
+        "seconds": 4.0
+      },
+      {
+        "setting": 0.7742636826811278,
+        "fold_scores": [
+          0.5771781770424548,
+          0.5764539728800482
+        ],
+        "mean": 0.5768160749612514,
+        "seconds": 3.4
+      },
+      {
+        "setting": 2.782559402207126,
+        "fold_scores": [
+          0.5712754991098309,
+          0.5710910951091106
+        ],
+        "mean": 0.5711832971094708,
+        "seconds": 3.1
+      },
+      {
+        "setting": 10.0,
+        "fold_scores": [
+          0.5652648137264223,
+          0.5662147288092442
+        ],
+        "mean": 0.5657397712678333,
+        "seconds": 2.9
+      }
+    ]
+  },
+  "model_b_gbm": {
+    "metric": "c_index (higher is better)",
+    "best": {
+      "setting": {
+        "learning_rate": 0.03,
+        "max_leaf_nodes": 63,
+        "min_samples_leaf": 500,
+        "l2_regularization": 10.0,
+        "max_features": 1.0
+      },
+      "fold_scores": [
+        0.5966846929854003,
+        0.5971560702907689
+      ],
+      "mean": 0.5969203816380846,
+      "seconds": 24.1
+    },
+    "trials": [
+      {
+        "setting": {
+          "learning_rate": 0.2,
+          "max_leaf_nodes": 31,
+          "min_samples_leaf": 20,
+          "l2_regularization": 0.1,
+          "max_features": 0.8
+        },
+        "fold_scores": [
+          0.5924554696500984,
+          0.5937791768720605
+        ],
+        "mean": 0.5931173232610795,
+        "seconds": 11.4
+      },
+      {
+        "setting": {
+          "learning_rate": 0.2,
+          "max_leaf_nodes": 63,
+          "min_samples_leaf": 500,
+          "l2_regularization": 0.0,
+          "max_features": 1.0
+        },
+        "fold_scores": [
+          0.5917770152784688,
+          0.5929942762943972
+        ],
+        "mean": 0.5923856457864329,
+        "seconds": 13.4
+      },
+      {
+        "setting": {
+          "learning_rate": 0.03,
+          "max_leaf_nodes": 63,
+          "min_samples_leaf": 50,
+          "l2_regularization": 0.0,
+          "max_features": 0.8
+        },
+        "fold_scores": [
+          0.5962340097848496,
+          0.5955363905953539
+        ],
+        "mean": 0.5958852001901018,
+        "seconds": 24.4
+      },
+      {
+        "setting": {
+          "learning_rate": 0.05,
+          "max_leaf_nodes": 63,
+          "min_samples_leaf": 50,
+          "l2_regularization": 0.0,
+          "max_features": 1.0
+        },
+        "fold_scores": [
+          0.5958986183803818,
+          0.5965081487560567
+        ],
+        "mean": 0.5962033835682192,
+        "seconds": 21.0
+      },
+      {
+        "setting": {
+          "learning_rate": 0.05,
+          "max_leaf_nodes": 63,
+          "min_samples_leaf": 200,
+          "l2_regularization": 10.0,
+          "max_features": 0.8
+        },
+        "fold_scores": [
+          0.5959060512075384,
+          0.5970021963382445
+        ],
+        "mean": 0.5964541237728914,
+        "seconds": 22.2
+      },
+      {
+        "setting": {
+          "learning_rate": 0.03,
+          "max_leaf_nodes": 63,
+          "min_samples_leaf": 500,
+          "l2_regularization": 10.0,
+          "max_features": 1.0
+        },
+        "fold_scores": [
+          0.5966846929854003,
+          0.5971560702907689
+        ],
+        "mean": 0.5969203816380846,
+        "seconds": 24.1
+      },
+      {
+        "setting": {
+          "learning_rate": 0.1,
+          "max_leaf_nodes": 31,
+          "min_samples_leaf": 50,
+          "l2_regularization": 0.0,
+          "max_features": 0.5
+        },
+        "fold_scores": [
+          0.5938124570014006,
+          0.5958654732893933
+        ],
+        "mean": 0.5948389651453969,
+        "seconds": 15.4
+      },
+      {
+        "setting": {
+          "learning_rate": 0.05,
+          "max_leaf_nodes": 31,
+          "min_samples_leaf": 100,
+          "l2_regularization": 1.0,
+          "max_features": 1.0
+        },
+        "fold_scores": [
+          0.5954190103314958,
+          0.5963241595687989
+        ],
+        "mean": 0.5958715849501474,
+        "seconds": 23.9
+      },
+      {
+        "setting": {
+          "learning_rate": 0.2,
+          "max_leaf_nodes": 127,
+          "min_samples_leaf": 200,
+          "l2_regularization": 10.0,
+          "max_features": 0.5
+        },
+        "fold_scores": [
+          0.590265499072099,
+          0.5910052862606413
+        ],
+        "mean": 0.5906353926663701,
+        "seconds": 12.7
+      },
+      {
+        "setting": {
+          "learning_rate": 0.2,
+          "max_leaf_nodes": 127,
+          "min_samples_leaf": 50,
+          "l2_regularization": 0.1,
+          "max_features": 0.8
+        },
+        "fold_scores": [
+          0.5890607347399429,
+          0.5912169575118729
+        ],
+        "mean": 0.5901388461259078,
+        "seconds": 10.9
+      }
+    ]
+  }
+}
