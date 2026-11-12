@@ -1,0 +1,41 @@
+
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-api.txt
+            artifacts/versions.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -c artifacts/versions.txt -r requirements.txt -r requirements-api.txt httpx
+
+      - name: Run full test suite
+        run: python -m pytest -q tests/
+
+      - name: Build Docker image
+        run: docker build -t taxi-api:ci .

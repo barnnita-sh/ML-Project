@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Where should I drive next?</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  body { margin: 0; font-family: system-ui, sans-serif; display: flex; flex-direction: column; height: 100vh; }
+  header { padding: 10px 16px; background: #1e2327; color: #fff; }
+  header small { opacity: .7; }
+  main { flex: 1; display: flex; min-height: 0; }
+  #panel { width: 380px; padding: 12px; overflow-y: auto; border-right: 1px solid #ddd; }
+  #map { flex: 1; }
+  select, button { width: 100%; padding: 8px; margin: 6px 0; font-size: 14px; }
+  button { background: #0b6bcb; color: #fff; border: 0; border-radius: 6px; cursor: pointer; }
+  .card { border: 1px solid #ddd; border-radius: 8px; padding: 8px 10px; margin: 8px 0; }
+  .card b { font-size: 15px; }
+  .low { color: #b45309; } .medium { color: #6b7280; } .high { color: #15803d; }
+  #outcome { background: #f3f4f6; }
+  footer { font-size: 11px; padding: 4px 16px; color: #666; border-top: 1px solid #ddd; }
+  @media (max-width: 800px) { main { flex-direction: column; } #panel { width: auto; max-height: 45%; } }
+</style>
+</head>
+<body>
+<header><b>Where should I drive next?</b> <small>Bangkok taxi area recommender &middot; replay of one historical day, not live traffic</small></header>
+<main>
+  <div id="panel">
+    <label for="moment">Pick an empty taxi at a moment in time</label>
+    <select id="moment"></select>
+    <button id="go">Find me a better area</button>
+    <div id="msg"></div>
+    <div id="results"></div>
+    <div id="outcome" class="card" hidden></div>
+  </div>
+  <div id="map"></div>
+</main>
+<footer>Data: iTIC Foundation / Longdo Traffic probe data 2025 (CC BY 4.0). Estimates from historical taxis, not a guarantee of time saved.</footer>
+<script>
+const map = L.map('map').setView([13.75, 100.52], 12);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 18, attribution: '&copy; OpenStreetMap contributors'}).addTo(map);
+let layer = L.layerGroup().addTo(map), moments = [];
+const $ = id => document.getElementById(id);
+
+function text(tag, str, cls) { const e = document.createElement(tag); e.textContent = str; if (cls) e.className = cls; return e; }
+
+async function load() {
+  const r = await fetch('/demo/moments?n=40');
+  moments = await r.json();
+  const sel = $('moment');
+  moments.forEach((m, i) => {
+    const o = document.createElement('option');
+    o.value = i; o.textContent = m.time.replace('T', ' ').slice(0, 16) + ' \u2014 empty ' + m.minutes_empty + ' min';
+    sel.appendChild(o);
+  });
+}
+
+$('go').onclick = async () => {
+  const m = moments[$('moment').value];
+  if (!m) return;
+  $('msg').textContent = 'Working...';
+  const r = await fetch('/recommend', {method: 'POST', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({hex: m.hex, time: m.time, minutes_empty: m.minutes_empty})});
+  const d = await r.json();
+  $('msg').textContent = '';
+  if (!r.ok) { $('msg').textContent = d.detail || 'Error'; return; }
+  layer.clearLayers();
+  const res = $('results'); res.replaceChildren();
+  if (!d.recommendations.length) { res.appendChild(text('div', 'Not enough data here.', 'card')); return; }
+  const pts = [];
+  d.recommendations.forEach(x => {
+    L.circle([x.lat, x.lon], {radius: 450, color: '#0b6bcb', fillOpacity: .25}).addTo(layer)
+      .bindTooltip(String(x.rank), {permanent: true, direction: 'center'});
+    pts.push([x.lat, x.lon]);
+    const c = document.createElement('div'); c.className = 'card';
+    c.appendChild(text('b', '#' + x.rank + (x.stay_here ? ' Stay here' : ' Drive ' + x.drive_min + ' min')));
+    c.appendChild(text('div', 'Expected wait ' + x.expected_wait_min + ' min \u00b7 ' + Math.round(x.p_pickup_15min * 100) +
+      '% chance of a pickup within 15 min'));
+    c.appendChild(text('div', 'Total score ' + x.score + ' min'));
+    const conf = text('div', 'Confidence: ' + x.confidence, x.confidence); c.appendChild(conf);
+    c.appendChild(text('div', x.reason));
+    res.appendChild(c);
+  });
+  map.fitBounds(L.latLngBounds(pts).pad(0.5));
+  const o = $('outcome'); o.hidden = false; o.replaceChildren();
+  o.appendChild(text('b', 'What actually happened next'));
+  o.appendChild(text('div', m.pickup_seen
+    ? 'This taxi (waiting in its own area) got a passenger after ' + m.minutes_until_end.toFixed(0) + ' more minutes.'
+    : 'This taxi was still empty ' + m.minutes_until_end.toFixed(0) + ' minutes later, when we stopped watching it.'));
+  o.appendChild(text('div', 'One taxi is only one example; the replay evaluation compares strategies over many.'));
+};
+load();
+</script>
+</body>
+</html>

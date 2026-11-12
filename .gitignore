@@ -20,3 +20,17 @@ venv/
 
 # OS
 .DS_Store
+
+# Allow the small serving artifacts required by the API
+!artifacts/
+!artifacts/*.parquet
+
+# Local files and credentials must never be committed
+.pytest_cache/
+pipeline_mine/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.aws/
