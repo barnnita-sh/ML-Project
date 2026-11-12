@@ -39,3 +39,42 @@ def model_b_curves(model, candidate_df: pd.DataFrame) -> np.ndarray:
     if hasattr(model, "est") and hasattr(model, "prep"):  # ModelB_Cox
         return model.est.predict_curve(model.prep.transform(candidate_df))
     raise TypeError("Expected fitted taxi.models.wrappers.ModelB_GBM or ModelB_Cox")
+
+
+
+def historical_fallback_curve(model, feature_row):
+    """Return a saved historical curve and its fallback level.
+
+    Levels:
+        0 = area + hour band + minutes-empty band
+        1 = hour band + minutes-empty band
+        2 = minutes-empty band only
+
+    Returns (None, None) if no stored group curve is available.
+    The citywide curve is intentionally not used.
+    """
+    from taxi.models.baselines import AREA_DEG, MINUTE_BANDS
+
+    lat = float(feature_row["hex_lat"])
+    lon = float(feature_row["hex_lon"])
+    hour = int(feature_row["hour_of_day"])
+    minutes_empty = float(feature_row["minutes_empty"])
+
+    area = f"{round(lat / AREA_DEG)}_{round(lon / AREA_DEG)}"
+    hour_band = hour // 3
+
+    # Match pd.cut(..., right=False) in HistoricalSurvival.
+    band = int(np.searchsorted(MINUTE_BANDS[1:], minutes_empty, side="right"))
+
+    keys = [
+        f"{area}|{hour_band}|{band}",
+        f"{hour_band}|{band}",
+        str(band),
+    ]
+
+    for level, key in enumerate(keys):
+        curve = model.tables[level].get(key)
+        if curve is not None:
+            return curve, level
+
+    return None, None

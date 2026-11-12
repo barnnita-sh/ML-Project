@@ -45,6 +45,9 @@ def test_candidate_current_hex_and_drive_cap():
 
 def test_candidate_feature_hour_and_projected_empty():
     class FakeWindow:
+        def __init__(self):
+            self.days = {}
+
         def features(self, hexes, hours):
             assert list(hours) == [100, 100]
             return pd.DataFrame({"hour_of_day": hours % 24})

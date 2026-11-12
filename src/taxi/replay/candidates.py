@@ -63,8 +63,26 @@ def candidate_features(feature_window, candidates: pd.DataFrame, *, snapshot_t: 
     if candidates.empty:
         return pd.DataFrame()
     h1 = int(snapshot_t) // 3600
-    features = feature_window.features(candidates["hex"].to_numpy(),
-                                       np.full(len(candidates), h1, dtype=np.int64))
+    # Replay-only memoization: static features depend on (window, hex, request hour),
+    # not on drive minutes or minutes_empty. Preserve original row order and dtypes.
+    hexes = candidates["hex"].to_numpy()
+    signature = tuple(feature_window.days.keys())
+    cache = getattr(feature_window, "_replay_feature_cache", None)
+    if cache is None or cache["signature"] != signature:
+        cache = {"signature": signature, "by_hour": {}}
+        feature_window._replay_feature_cache = cache
+    hour_cache = cache["by_hour"].setdefault(h1, {})
+    missing = list(dict.fromkeys(h for h in hexes if h not in hour_cache))
+    if missing:
+        computed = feature_window.features(
+            np.asarray(missing), np.full(len(missing), h1, dtype=np.int64)
+        )
+        for h, values in zip(missing, computed.to_numpy()):
+            hour_cache[h] = values.copy()
+        cache["columns"] = computed.columns
+    features = pd.DataFrame(
+        np.vstack([hour_cache[h] for h in hexes]), columns=cache["columns"]
+    ).astype("float32")
     features = features.reset_index(drop=True)
     features.insert(0, "hex", candidates["hex"].to_numpy())
     features.insert(1, "drive_min", candidates["drive_min"].to_numpy(float))

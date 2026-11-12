@@ -21,16 +21,25 @@ def test_training_coverage_counts_correct_band():
 
 
 def test_test_guard_requires_confirm_and_full_run(tmp_path):
-    lock = tmp_path / 'TEST_RUN_DONE'
+    lock = tmp_path / "TEST_RUN_DONE"
+
     with pytest.raises(ValueError):
-        check_test_guard('test', False, None, None, lock)
+        check_test_guard("test", False, None, None, 100, lock)
+
     with pytest.raises(ValueError):
-        check_test_guard('test', True, 1, None, lock)
-    check_test_guard('test', True, None, None, lock)
-    lock.write_text('done')
+        check_test_guard("test", True, 1, None, 100, lock)
+
+    with pytest.raises(ValueError):
+        check_test_guard("test", True, None, None, None, lock)
+
+    check_test_guard("test", True, None, None, 100, lock)
+
+    lock.write_text("done")
+
     with pytest.raises(FileExistsError):
-        check_test_guard('test', True, None, None, lock)
-    check_test_guard('val', False, 1, 1, lock)
+        check_test_guard("test", True, None, None, 100, lock)
+
+    check_test_guard("val", False, 1, 1, None, lock)
 
 
 def test_missing_frozen_manifest_is_clear(tmp_path):
@@ -49,8 +58,15 @@ def test_engine_can_return_candidate_outcomes():
             def predict_curve(self, df): return np.ones((len(df), 182))
         curve = Curve()
     class Window:
+        def __init__(self):
+                self.days = {}
+                
         def features(self, hexes, hours):
-            return pd.DataFrame({'minutes_empty': np.zeros(len(hexes))})
+            return pd.DataFrame({
+                'minutes_empty': np.zeros(len(hexes)),
+                'hour_of_day': np.asarray(hours),
+            })
+        
     ref = pd.DataFrame({'episode_id': [f'p{i}' for i in range(5)],
                         'vid': [f'v{i}' for i in range(5)],
                         'snapshot_t': [3600] * 5,
@@ -62,7 +78,7 @@ def test_engine_can_return_candidate_outcomes():
     p, c = replay_decision({'hex': h, 'snapshot_t': 3600, 'minutes_empty': 5,
                             'episode_id': 'own', 'vid': 'ownv'},
                            available_hexes=[], feature_window=Window(),
-                           model_a=FakeA(), model_b=FakeB(), heatmap=FakeA(),
+                           model_a=FakeA(), model_b=FakeB(), fallback_b=FakeB(), heatmap=FakeA(),
                            comparison_reference=prepare_reference(ref), speed_kmh=20,
                            training_coverage=lambda *args: 30,
                            return_candidate_outcomes=True)

@@ -53,7 +53,8 @@ def attach_top3_hits(results: pd.DataFrame, candidate_outcomes: pd.DataFrame,
 
     candidate_outcomes columns: episode_id, snapshot_t, hex, score_min, covered.
     A hit means one of the strategy's top three is within tolerance_min of
-    the best covered candidate. Returns NA if no candidate is evaluable.
+    the best covered candidate. Returns NA if no candidate is evaluable or
+    none of the strategy's top three has an evaluable outcome.
     This does not treat a missing candidate as a failure or an observed zero.
     """
     needed = set(KEYS) | {'hex', 'score_min', 'covered'}
@@ -83,8 +84,12 @@ def attach_top3_hits(results: pd.DataFrame, candidate_outcomes: pd.DataFrame,
         ranked = row.top3_hexes
         if isinstance(ranked, str):
             raise ValueError('top3_hexes must be a list or tuple, not a string')
-        hits.append(any(h in scores and scores[h] <= best + tolerance_min + 1e-9
-                        for h in list(ranked)[:3]))
+        observed_top3 = [h for h in list(ranked)[:3] if h in scores]
+        if not observed_top3:
+            hits.append(pd.NA)
+        else:
+            hits.append(any(scores[h] <= best + tolerance_min + 1e-9
+                            for h in observed_top3))
     out['top3_hit'] = pd.array(hits, dtype='boolean')
     return out
 
@@ -103,6 +108,8 @@ def policy_summary(results: pd.DataFrame) -> pd.DataFrame:
             'n_decisions': len(group),
             'n_evaluable': len(valid),
             'coverage_rate': float(group['evaluable'].mean()) if len(group) else np.nan,
+            'recommendation_availability_rate': float(group['recommendation_available'].fillna(False).astype(bool).mean()) if 'recommendation_available' in group else float(group['recommended_hex'].notna().mean()),
+            'outcome_evaluability_rate': float(group['evaluable'].mean()) if len(group) else np.nan,
             'mean_score_min': float(valid['recommended_score_min'].mean()) if len(valid) else np.nan,
             'mean_regret_min': float(valid['regret_min'].mean()) if len(valid) else np.nan,
             'top3_hit_rate': float(hit.mean()) if hit.notna().any() else np.nan,

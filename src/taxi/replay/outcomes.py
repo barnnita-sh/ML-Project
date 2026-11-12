@@ -24,17 +24,29 @@ def area_key(hexes) -> np.ndarray:
                      for a, b in zip(lat, lon)], dtype=object)
 
 
-def prepare_reference(snapshots: pd.DataFrame) -> pd.DataFrame:
-    """Attach area labels once; caller controls the allowed reference days.
 
-    Use only reference data approved in the validation plan. Never include
-    a decision's own episode/vehicle in its comparison group.
-    """
+def prepare_reference(snapshots: pd.DataFrame) -> pd.DataFrame:
+    """Prepare same-split comparison data and index it by area and time."""
     missing = REQUIRED - set(snapshots.columns)
     if missing:
         raise ValueError(f'Missing comparison columns: {sorted(missing)}')
+
     out = snapshots.copy()
-    out['_replay_area'] = area_key(out['hex'].to_numpy()) if len(out) else pd.Series(dtype=object)
+    out['_replay_area'] = (
+        area_key(out['hex'].to_numpy())
+        if len(out)
+        else pd.Series(dtype=object)
+    )
+
+    # Build the index once, rather than scanning every row per candidate.
+    area_index = {}
+
+    for area, group in out.groupby('_replay_area', sort=False):
+        ordered = group.sort_values('snapshot_t', kind='stable')
+        times = ordered['snapshot_t'].to_numpy(dtype=float)
+        area_index[area] = (times, ordered)
+
+    out.attrs['_replay_area_index'] = area_index
     return out
 
 
@@ -42,26 +54,68 @@ def comparison_taxis(reference: pd.DataFrame, *, destination_hex,
                     arrival_t: float, arrival_minutes_empty: float,
                     own_episode_id, own_vid, time_tolerance_min: float = 15,
                     empty_tolerance_min: float = 10) -> pd.DataFrame:
-    """Choose at most one nearest-in-time snapshot per distinct other episode."""
+    """Find comparison taxis using the prebuilt area/time index."""
     if '_replay_area' not in reference:
         raise ValueError('Call prepare_reference() first')
+
     target_area = area_key([destination_hex])[0]
-    r = reference
-    mask = (
-        (r['_replay_area'] == target_area)
-        & (r['episode_id'].astype(str) != str(own_episode_id))
-        & (r['vid'].astype(str) != str(own_vid))
-        & ((r['snapshot_t'] - arrival_t).abs() <= 60 * time_tolerance_min)
-        & ((r['minutes_empty'] - arrival_minutes_empty).abs() <= empty_tolerance_min)
+
+    area_index = reference.attrs.get('_replay_area_index')
+
+    if area_index is None:
+        raise ValueError('Comparison index missing; call prepare_reference()')
+
+    if target_area not in area_index:
+        return reference.iloc[0:0].copy()
+
+    times, group = area_index[target_area]
+
+    tolerance_seconds = 60 * time_tolerance_min
+
+    left = np.searchsorted(
+        times, arrival_t - tolerance_seconds, side='left'
     )
-    found = r.loc[mask].copy()
+    right = np.searchsorted(
+        times, arrival_t + tolerance_seconds, side='right'
+    )
+
+    if left == right:
+        return group.iloc[0:0].copy()
+
+    nearby = group.iloc[left:right]
+
+    mask = (
+        (nearby['episode_id'].astype(str) != str(own_episode_id))
+        & (nearby['vid'].astype(str) != str(own_vid))
+        & (
+            (nearby['minutes_empty'] - arrival_minutes_empty).abs()
+            <= empty_tolerance_min
+        )
+    )
+
+    found = nearby.loc[mask].copy()
+
     if found.empty:
         return found
-    found['_time_delta'] = (found['snapshot_t'] - arrival_t).abs()
-    found['_empty_delta'] = (found['minutes_empty'] - arrival_minutes_empty).abs()
-    found = (found.sort_values(['_time_delta', '_empty_delta', 'snapshot_t'])
-             .drop_duplicates('episode_id').drop(columns=['_time_delta', '_empty_delta']))
+
+    found['_time_delta'] = (
+        found['snapshot_t'] - arrival_t
+    ).abs()
+
+    found['_empty_delta'] = (
+        found['minutes_empty'] - arrival_minutes_empty
+    ).abs()
+
+    found = (
+        found.sort_values(
+            ['_time_delta', '_empty_delta', 'snapshot_t']
+        )
+        .drop_duplicates('episode_id')
+        .drop(columns=['_time_delta', '_empty_delta'])
+    )
+
     return found
+
 
 
 def estimate_candidate(reference: pd.DataFrame, *, destination_hex,

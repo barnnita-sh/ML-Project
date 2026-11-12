@@ -80,6 +80,10 @@ def test_engine_returns_five_policy_rows():
     h = to_hex([13.75], [100.5])[0]
     r = prepare_reference(make_reference(h))
     class Window:
+        def __init__(self):
+                self.days = {} 
+
+                
         def features(self, hexes, hours):
             return pd.DataFrame({'a_score': [1] * len(hexes),
                                  'h_score': [1] * len(hexes),
