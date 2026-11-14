@@ -128,6 +128,7 @@ def ranked_strategies(candidates: pd.DataFrame, feature_rows: pd.DataFrame,
         'hex': candidates['hex'].to_numpy(),
         'fallback_used': fallback_used,
         'fallback_level': fallback_levels,
+        'model_b_score': model_b_scores,
     })
 
     return rankings, diagnostics

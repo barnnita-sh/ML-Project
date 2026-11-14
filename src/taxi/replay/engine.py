@@ -83,6 +83,7 @@ def replay_decision(decision, *, available_hexes, feature_window,
 
         result['fallback_used'] = bool(diagnostic['fallback_used'])
         result['fallback_level'] = diagnostic['fallback_level']
+        result['model_b_score'] = diagnostic.get('model_b_score')
 
         estimated[item.hex] = result
 
@@ -140,6 +141,7 @@ def replay_decision(decision, *, available_hexes, feature_window,
             'fallback_used': r.get('fallback_used', False),
             'fallback_level': r.get('fallback_level'),
             'fallback_curve_found': bool(r.get('fallback_used', False) and r.get('fallback_level') is not None),
+            'model_b_score': r.get('model_b_score'),
         }
         for h, r in estimated.items()
     ])
