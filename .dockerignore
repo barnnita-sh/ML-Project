@@ -1,0 +1,15 @@
+.git
+.github
+venv
+.venv
+__pycache__
+*.pyc
+pipeline_output
+eda_output_bangkok
+data
+audit
+docs
+scripts
+tests
+EDA-Bangkok-all.ipynb
+pipeline_mine

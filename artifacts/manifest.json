@@ -1,0 +1,22 @@
+{
+  "model_version": "model_b_gbm-v1.0",
+  "model_file": "model_b_gbm",
+  "rules_version": "v1.0",
+  "training_cutoff": "2025-09-15",
+  "demo_day": "20251105",
+  "grid": "h3",
+  "storage_format": "parquet",
+  "detour_factor": 1.4805938370336378,
+  "city_speed_kmh": 39.10144805908203,
+  "python": "3.11.9",
+  "built_at": "2026-11-11T14:18:23",
+  "n_hexagons": 5442,
+  "validation": {
+    "c_index": 0.6036131912474275,
+    "mae_completed_min": 14.358881130820556,
+    "brier_15": 0.23046734965363397,
+    "calibration_error_15": 0.011212155598377354,
+    "mean_p_pickup_15": 0.44118696536010116,
+    "observed_p_pickup_15": 0.432598542636243
+  }
+}

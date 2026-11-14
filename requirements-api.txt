@@ -1,0 +1,12 @@
+# What the web service needs. Exact versions of the libraries that trained the models come from
+# artifacts/versions.txt (written by scripts/make_artifacts.py) via:  pip install -r requirements-api.txt -c artifacts/versions.txt
+fastapi
+uvicorn
+pydantic
+pandas
+numpy
+scipy
+scikit-learn
+joblib
+pyarrow
+h3>=4
