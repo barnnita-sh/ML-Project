@@ -34,3 +34,8 @@ pipeline_mine/
 *.pem
 *.key
 .aws/
+*.zip
+*.pptx
+*.pdf
+EDA_Bangkok.ipynb
+EDA_Cabspotting.ipynb
